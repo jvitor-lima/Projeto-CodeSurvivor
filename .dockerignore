@@ -1,0 +1,44 @@
+# Dependencias e build (reconstruidos dentro da imagem)
+node_modules
+vendor
+public/build
+public/hot
+public/storage
+
+# Ambiente local — a imagem usa .env.docker
+.env
+.env.backup
+.env.production
+.env.local
+
+# Git e metadados
+.git
+.gitignore
+.gitattributes
+.editorconfig
+
+# Ferramentas de IDE/editor
+.idea
+.vscode
+.zed
+.nova
+.fleet
+.claude
+
+# Caches e logs de teste
+.phpunit.result.cache
+.phpunit.cache
+
+# Manifestos de pacotes/cache do host (regenerados no runtime, sem pacotes de dev)
+bootstrap/cache/*.php
+storage/logs/*.log
+storage/framework/cache/data/*
+storage/framework/sessions/*
+storage/framework/views/*
+
+# Documentacao pesada (nao precisa na imagem)
+*.md
+docs
+
+# Docker (nao precisa dentro da imagem)
+docker-compose.yml
