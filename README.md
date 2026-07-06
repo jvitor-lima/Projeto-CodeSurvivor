@@ -9,7 +9,7 @@ Jogo web educacional onde o jogador controla um personagem por comandos de códi
 ## Como rodar
 
 ```bash
-git clone <URL_DO_REPO> codeSurvivor
+git clone https://github.com/jvitor-lima/Projeto-CodeSurvivor.git codeSurvivor
 cd codeSurvivor
 docker compose up -d --build
 ```
