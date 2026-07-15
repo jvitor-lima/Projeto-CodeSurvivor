@@ -332,10 +332,10 @@
         },
         positionAutocomplete(editor, context = null) {
             const current = context ?? this.getEditorContext(editor);
-            const visibleTop = 20 + (current.lineIndex * 32) - editor.scrollTop + 30;
-            const maxTop = Math.max(52, editor.clientHeight - 210);
-            this.autocompleteTop = Math.min(Math.max(52, visibleTop), maxTop);
-            this.autocompleteLeft = Math.min(20 + (current.beforeCursor.length * 8.8), Math.max(20, editor.clientWidth - 340));
+            const visibleTop = 20 + (current.lineIndex * 32) - editor.scrollTop + 42;
+            const maxTop = Math.max(56, editor.clientHeight - 196);
+            this.autocompleteTop = Math.min(Math.max(56, visibleTop), maxTop);
+            this.autocompleteLeft = Math.max(18, editor.clientWidth - Math.min(318, editor.clientWidth - 28) - 18);
         },
         acceptAutocomplete(editor, suggestion = null) {
             const selected = suggestion ?? this.autocompleteMatches[this.autocompleteSelected];
@@ -1787,7 +1787,7 @@
 
         .command-autocomplete {
             position: absolute;
-            width: min(340px, calc(100% - 28px));
+            width: min(318px, calc(100% - 28px));
             z-index: 45;
             overflow: hidden;
             border: 1px solid rgba(16, 185, 129, 0.5);
@@ -1798,7 +1798,7 @@
         }
 
         .command-autocomplete-scroll {
-            max-height: 224px;
+            max-height: 188px;
             overflow-y: auto;
         }
 
@@ -2323,6 +2323,17 @@
             color: #bfdbfe;
             font-family: 'Fira Code', monospace;
             font-weight: 700;
+        }
+
+        @media (max-width: 640px) {
+            .command-autocomplete {
+                width: calc(100% - 20px);
+                left: 10px !important;
+            }
+
+            .command-autocomplete-scroll {
+                max-height: 164px;
+            }
         }
 
         @keyframes tutorial-anchor-pulse {
