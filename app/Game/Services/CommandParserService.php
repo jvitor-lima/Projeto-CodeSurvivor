@@ -5,6 +5,7 @@ namespace App\Game\Services;
 use App\Game\Commands\AttackCommand;
 use App\Game\Commands\Command;
 use App\Game\Commands\MoveCommand;
+use App\Game\Commands\WaitCommand;
 
 /**
  * Serviço responsável por analisar o código digitado pelo jogador.
@@ -105,6 +106,11 @@ class CommandParserService
                     for ($s = 0; $s < $steps; $s++) {
                         $commands[] = new MoveCommand($direction, 1, $lineNumber);
                     }
+                } elseif ($command instanceof WaitCommand && $this->getWaitCommandTurns($line) > 1) {
+                    $turns = $this->getWaitCommandTurns($line);
+                    for ($s = 0; $s < $turns; $s++) {
+                        $commands[] = new WaitCommand($lineNumber);
+                    }
                 } else {
                     $commands[] = $command;
                 }
@@ -140,6 +146,10 @@ class CommandParserService
             return new AttackCommand($lineNumber, isset($matches[2]) ? trim($matches[2]) : null);
         }
 
+        if (preg_match('/^hero\.wait\(\s*(\d*)\s*\);?$/i', $line)) {
+            return new WaitCommand($lineNumber);
+        }
+
         return null;
     }
 
@@ -169,6 +179,15 @@ class CommandParserService
         return 'down';
     }
 
+    private function getWaitCommandTurns(string $line): int
+    {
+        if (preg_match('/^hero\.wait\(\s*(\d*)\s*\);?$/i', $line, $matches)) {
+            return $matches[1] !== '' ? max(1, (int) $matches[1]) : 1;
+        }
+
+        return 1;
+    }
+
     public function serializeCommands(array $commands): array
     {
         return array_map(fn(Command $cmd) => $cmd->toArray(), $commands);
@@ -181,6 +200,7 @@ class CommandParserService
             $command = match ($item['type'] ?? '') {
                 'move'   => MoveCommand::fromArray($item),
                 'attack' => AttackCommand::fromArray($item),
+                'wait'   => WaitCommand::fromArray($item),
                 default  => null,
             };
             if ($command) $commands[] = $command;

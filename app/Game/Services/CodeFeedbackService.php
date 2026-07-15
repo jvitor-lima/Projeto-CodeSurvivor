@@ -6,6 +6,7 @@ class CodeFeedbackService
 {
     private const MOVE_PATTERN = '/^hero\.move(Right|Left|Up|Down)\(\s*(\d*)\s*\);?$/i';
     private const ATTACK_PATTERN = '/^hero\.attack\(\s*(?:(["\'])([^"\']+)\1)?\s*\);?$/i';
+    private const WAIT_PATTERN = '/^hero\.wait\(\s*(\d*)\s*\);?$/i';
     private const REPEAT_PATTERN = '/^repeat\s*\(\s*\d+\s*\)\s*\{?$/i';
     private const FOR_PATTERN = '/^for\s*\(.*;\s*i\s*<\s*\d+\s*;.*\)\s*\{?$/i';
 
@@ -93,7 +94,7 @@ class CodeFeedbackService
      */
     private function syntaxFeedback(string $line, int $lineNumber): ?array
     {
-        if ($line === '}' || preg_match(self::MOVE_PATTERN, $line) || preg_match(self::ATTACK_PATTERN, $line)) {
+        if ($line === '}' || preg_match(self::MOVE_PATTERN, $line) || preg_match(self::ATTACK_PATTERN, $line) || preg_match(self::WAIT_PATTERN, $line)) {
             return null;
         }
 
@@ -161,7 +162,24 @@ class CodeFeedbackService
             ];
         }
 
-        if (str_contains($line, 'hero.move') || str_contains($line, 'hero.attack')) {
+        if (preg_match('/^wait\(\s*(\d*)\s*\)\s*;?$/i', $line, $matches)) {
+            $turns = $matches[1] ?? '';
+
+            return [
+                'type' => 'warning',
+                'category' => 'Erro de comando',
+                'title' => 'Quem espera?',
+                'message' => "Linha {$lineNumber}: indique que Leon executa a espera.",
+                'suggestion' => [
+                    'label' => 'Use',
+                    'from' => $line,
+                    'to' => "hero.wait({$turns})",
+                ],
+                'line' => $lineNumber,
+            ];
+        }
+
+        if (str_contains($line, 'hero.move') || str_contains($line, 'hero.attack') || str_contains($line, 'hero.wait')) {
             return [
                 'type' => 'warning',
                 'category' => 'Atencao',
@@ -182,7 +200,7 @@ class CodeFeedbackService
             'message' => "Linha {$lineNumber}: esse comando nao existe no jogo.",
             'suggestion' => [
                 'label' => 'Comandos validos',
-                'to' => 'hero.moveDown(), hero.moveUp(), hero.moveLeft(), hero.moveRight()',
+                'to' => 'hero.moveDown(), hero.attack(), hero.wait()',
             ],
             'line' => $lineNumber,
         ];

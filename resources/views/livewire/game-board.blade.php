@@ -6,6 +6,7 @@
         ['snippet' => 'hero.moveUp()', 'label' => 'Mover Cima', 'icon' => 'arrow-u', 'color' => 'blue'],
         ['snippet' => 'hero.moveDown()', 'label' => 'Mover Baixo', 'icon' => 'arrow-d', 'color' => 'blue'],
         ['snippet' => 'hero.attack()', 'label' => 'Atacar', 'icon' => 'attack', 'color' => 'rose'],
+        ['snippet' => 'hero.wait()', 'label' => 'Esperar', 'icon' => 'clock', 'color' => 'slate'],
         ['snippet' => "repeat(3) {\n  hero.moveRight()\n}", 'label' => 'Repetir bloco', 'icon' => 'loop', 'color' => 'amber'],
     ];
     $levelLoreEntries = $this->getLevelLoreEntries();
@@ -43,6 +44,7 @@
             { insert: 'hero.moveUp()', label: 'hero.moveUp()', hint: 'Move Leon 1 casa para cima', icon: 'arrow-u' },
             { insert: 'hero.moveDown()', label: 'hero.moveDown()', hint: 'Move Leon 1 casa para baixo', icon: 'arrow-d' },
             { insert: 'hero.attack()', label: 'hero.attack()', hint: 'Ataca o inimigo a frente', icon: 'attack' },
+            { insert: 'hero.wait()', label: 'hero.wait()', hint: 'Espera 1 turno para observar inimigos', icon: 'clock' },
             { insert: 'repeat(3) {\n  hero.moveRight()\n}', label: 'repeat(3) { ... }', hint: 'Repete um bloco de comandos', icon: 'loop' }
         ],
         tutorialIconSvg(name) {
@@ -58,6 +60,7 @@
                 warning: '<svg viewBox=\'0 0 24 24\' fill=\'none\' stroke=\'currentColor\' stroke-width=\'1.7\'><path stroke-linecap=\'round\' stroke-linejoin=\'round\' d=\'M12 4 2.8 20h18.4L12 4Z\'/><path stroke-linecap=\'round\' stroke-linejoin=\'round\' d=\'M12 9v5M12 17h.01\'/></svg>',
                 info: '<svg viewBox=\'0 0 24 24\' fill=\'none\' stroke=\'currentColor\' stroke-width=\'1.7\'><path stroke-linecap=\'round\' stroke-linejoin=\'round\' d=\'M12 21a9 9 0 1 0 0-18 9 9 0 0 0 0 18Z\'/><path stroke-linecap=\'round\' stroke-linejoin=\'round\' d=\'M12 11v5M12 8h.01\'/></svg>',
                 loop: '<svg viewBox=\'0 0 24 24\' fill=\'none\' stroke=\'currentColor\' stroke-width=\'1.7\'><path stroke-linecap=\'round\' stroke-linejoin=\'round\' d=\'M17 2l4 4-4 4\'/><path stroke-linecap=\'round\' stroke-linejoin=\'round\' d=\'M3 11V9a3 3 0 0 1 3-3h15\'/><path stroke-linecap=\'round\' stroke-linejoin=\'round\' d=\'M7 22l-4-4 4-4\'/><path stroke-linecap=\'round\' stroke-linejoin=\'round\' d=\'M21 13v2a3 3 0 0 1-3 3H3\'/></svg>',
+                clock: '<svg viewBox=\'0 0 24 24\' fill=\'none\' stroke=\'currentColor\' stroke-width=\'1.7\'><path stroke-linecap=\'round\' stroke-linejoin=\'round\' d=\'M12 6v6l3.5 2.1\'/><path stroke-linecap=\'round\' stroke-linejoin=\'round\' d=\'M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z\'/></svg>',
                 'arrow-r': '<svg viewBox=\'0 0 24 24\' fill=\'none\' stroke=\'currentColor\' stroke-width=\'1.7\'><path stroke-linecap=\'round\' stroke-linejoin=\'round\' d=\'M4 12h16M14 6l6 6-6 6\'/></svg>',
                 'arrow-l': '<svg viewBox=\'0 0 24 24\' fill=\'none\' stroke=\'currentColor\' stroke-width=\'1.7\'><path stroke-linecap=\'round\' stroke-linejoin=\'round\' d=\'M20 12H4M10 6l-6 6 6 6\'/></svg>',
                 'arrow-u': '<svg viewBox=\'0 0 24 24\' fill=\'none\' stroke=\'currentColor\' stroke-width=\'1.7\'><path stroke-linecap=\'round\' stroke-linejoin=\'round\' d=\'M12 20V4M6 10l6-6 6 6\'/></svg>',
