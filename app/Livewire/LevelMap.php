@@ -42,6 +42,13 @@ class LevelMap extends Component
     public int $selectedMap = 1;
 
     /**
+     * Exibe destaque quando o jogador retorna ao mapa apos concluir a campanha.
+     *
+     * @var bool
+     */
+    public bool $campaignCompletedNotice = false;
+
+    /**
      * Inicializa o componente carregando o progresso da sessão/cache.
      *
      * @return void
@@ -54,6 +61,7 @@ class LevelMap extends Component
         $this->selectedMap = $requestedMap > 0 && $this->isMapUnlocked($requestedMap)
             ? $requestedMap
             : LevelConfig::getFirstIncompleteMap($this->levelProgress);
+        $this->campaignCompletedNotice = request()->boolean('completed');
     }
 
     /**

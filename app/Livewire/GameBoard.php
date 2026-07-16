@@ -335,6 +335,10 @@ class GameBoard extends Component
         $nextLevel = $currentLevel + 1;
         $levels = LevelConfig::getAllLevels();
 
+        if (! isset($levels[$nextLevel])) {
+            return redirect('/map?completed=1');
+        }
+
         if (isset($levels[$nextLevel]) && LevelConfig::getMapForLevel($nextLevel) !== LevelConfig::getMapForLevel($currentLevel)) {
             return redirect('/map?map=' . LevelConfig::getMapForLevel($nextLevel));
         }

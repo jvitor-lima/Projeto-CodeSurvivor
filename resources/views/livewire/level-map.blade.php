@@ -23,6 +23,12 @@
                 </div>
                 @php $selectedMap = $this->getSelectedMap(); @endphp
                 <p class="text-slate-400 font-mono text-xs uppercase tracking-[0.3em]">{{ $selectedMap['name'] }} // {{ $selectedMap['subtitle'] }}</p>
+                @if ($campaignCompletedNotice)
+                    <div class="mt-4 max-w-xl rounded border border-emerald-400/50 bg-emerald-500/15 px-4 py-3 shadow-[0_0_24px_rgba(16,185,129,0.22)]">
+                        <div class="text-[10px] font-black uppercase tracking-[0.24em] text-emerald-300">Campanha concluída</div>
+                        <div class="mt-1 text-sm font-bold text-emerald-50">Você completou todas as fases disponíveis. O mapa agora mostra todo o progresso da campanha.</div>
+                    </div>
+                @endif
                 <div class="mt-5 flex flex-wrap gap-3">
                     @foreach ($this->getCampaignMaps() as $mapId => $campaignMap)
                         @php
