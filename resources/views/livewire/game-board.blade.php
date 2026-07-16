@@ -3054,24 +3054,66 @@
         </div>
     </div>
 
-    @if ($gameState['win'] ?? false)
+    @if (($gameState['win'] ?? false) && $showWinModal)
+        @php
+            $review = $solutionReview ?: ['stars' => 3, 'maxStars' => 3, 'pendingCount' => 0, 'summary' => 'Solucao concluida.', 'pendingTitles' => []];
+            $stars = (int) ($review['stars'] ?? 3);
+            $maxStars = (int) ($review['maxStars'] ?? 3);
+            $pendingCount = (int) ($review['pendingCount'] ?? 0);
+        @endphp
         <div class="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-md animate-fade-in-scale">
-            <div class="bg-gradient-to-br from-slate-900 to-slate-950 rounded-lg p-10 text-center max-w-md w-full mx-4 shadow-2xl border-4 border-emerald-500/50 ring-4 ring-emerald-500/20">
+            <div class="bg-gradient-to-br from-slate-900 to-slate-950 rounded-lg p-8 sm:p-10 text-center max-w-lg w-full mx-4 shadow-2xl border-4 border-emerald-500/50 ring-4 ring-emerald-500/20">
                 <div class="inline-flex items-center justify-center p-5 bg-emerald-500/20 text-emerald-400 rounded-lg mb-6 shadow-lg border-2 border-emerald-500/50">
                     {!! UIConfig::getIcon('target', 'w-16 h-16') !!}
                 </div>
-                <h2 class="text-3xl font-extrabold text-emerald-400 mb-2 tracking-wider">FASE CONCLUIDA</h2>
-                <p class="text-slate-300 mb-8 text-lg">Sua sequencia levou Leon ao objetivo.</p>
+                <h2 class="text-3xl font-extrabold text-emerald-400 mb-2 tracking-wider">FASE CONCLUÍDA</h2>
+                <p class="text-slate-300 text-lg">Sua sequência levou Leon ao objetivo.</p>
+                <div class="my-6 rounded border border-emerald-500/30 bg-emerald-500/10 p-4">
+                    <div class="text-[10px] font-black uppercase tracking-[0.22em] text-emerald-300">Avaliação da solução</div>
+                    <div class="mt-2 flex justify-center gap-1 text-3xl text-amber-300" aria-label="{{ $stars }} de {{ $maxStars }} estrelas">
+                        @for ($i = 1; $i <= $maxStars; $i++)
+                            <span class="{{ $i <= $stars ? 'opacity-100' : 'opacity-25' }}">★</span>
+                        @endfor
+                    </div>
+                    <p class="mt-2 text-sm font-bold leading-relaxed text-slate-200">{{ $review['summary'] ?? '' }}</p>
+                </div>
+
+                @if ($pendingCount > 0)
+                    <div class="mb-6 rounded border border-amber-400/40 bg-amber-500/10 p-4 text-left">
+                        <div class="flex items-center gap-2 text-amber-200">
+                            {!! UIConfig::getIcon('light', 'w-5 h-5') !!}
+                            <span class="text-xs font-black uppercase tracking-widest">Feedback pendente</span>
+                        </div>
+                        <p class="mt-2 text-sm font-bold leading-relaxed text-slate-200">
+                            Existem {{ $pendingCount }} dica(s) para melhorar sua solução antes de avançar.
+                        </p>
+                        @if (! empty($review['pendingTitles']))
+                            <div class="mt-3 flex flex-wrap gap-2">
+                                @foreach ($review['pendingTitles'] as $title)
+                                    <span class="rounded border border-amber-300/30 px-2 py-1 text-[10px] font-black uppercase tracking-wider text-amber-100">{{ $title }}</span>
+                                @endforeach
+                            </div>
+                        @endif
+                    </div>
+                @endif
+
                 <div class="flex flex-col gap-3">
                     <button wire:click="nextLevel"
                             class="group w-full flex items-center justify-center gap-3 px-6 py-4 bg-emerald-600 hover:bg-emerald-700 text-white font-bold rounded-lg transition-all shadow-lg shadow-emerald-500/30 active:scale-[0.98]">
                         {{ $this->getNextLevelActionLabel() }}
                         {!! UIConfig::getIcon('next', 'w-6 h-6 group-hover:translate-x-1 transition-transform') !!}
                     </button>
-                    <button wire:click="resetLevel"
+                    @if ($pendingCount > 0)
+                        <button wire:click="reviewCompletedLevel"
+                                class="w-full flex items-center justify-center gap-3 px-6 py-4 bg-amber-600 hover:bg-amber-700 text-white font-bold rounded-lg transition-all active:scale-[0.98]">
+                            {!! UIConfig::getIcon('light', 'w-5 h-5') !!}
+                            Revisar feedback
+                        </button>
+                    @endif
+                    <button wire:click="restartLevelKeepingCode"
                             class="w-full flex items-center justify-center gap-3 px-6 py-4 bg-slate-700 hover:bg-slate-600 text-slate-100 font-bold rounded-lg transition-all active:scale-[0.98]">
                         {!! UIConfig::getIcon('reset', 'w-5 h-5') !!}
-                        Repetir fase
+                        Repetir mantendo código
                     </button>
                 </div>
             </div>

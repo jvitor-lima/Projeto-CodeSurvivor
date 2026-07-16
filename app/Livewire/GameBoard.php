@@ -103,6 +103,20 @@ class GameBoard extends Component
     public array $codeFeedback = [];
 
     /**
+     * Avaliacao simples da solucao ao concluir a fase.
+     *
+     * @var array<string, mixed>
+     */
+    public array $solutionReview = [];
+
+    /**
+     * Controla a modal de conclusao para permitir revisar feedback sem resetar a fase.
+     *
+     * @var bool
+     */
+    public bool $showWinModal = true;
+
+    /**
      * Registro simples das tentativas da fase atual, sem persistencia em banco.
      *
      * @var array<string, mixed>
@@ -143,6 +157,8 @@ class GameBoard extends Component
         $this->gameState = $state->toArray();
         $this->commands = $state->initialCode;
         $this->codeFeedback = [];
+        $this->solutionReview = [];
+        $this->showWinModal = true;
         $this->attemptTracker = $this->freshAttemptTracker();
         $this->attemptContext = [];
     }
@@ -170,6 +186,8 @@ class GameBoard extends Component
         $engine->initLevel($state, $currentLevel);
 
         $this->codeFeedback = (new CodeFeedbackService())->analyze($this->commands);
+        $this->solutionReview = [];
+        $this->showWinModal = true;
 
         // 2. Prepara a fila a partir do código
         $this->commandQueue = $engine->prepareCommands($state, $this->commands);
@@ -276,6 +294,8 @@ class GameBoard extends Component
         $this->playerAnimationTick = 0;
         $this->showInventoryModal = false;
         $this->codeFeedback = [];
+        $this->solutionReview = [];
+        $this->showWinModal = true;
         $this->attemptContext = [];
         $this->commands     = $state->initialCode;
         $this->gameState    = $state->toArray();
@@ -309,6 +329,8 @@ class GameBoard extends Component
         $this->playerAnimationTick = 0;
         $this->showInventoryModal = false;
         $this->codeFeedback = [];
+        $this->solutionReview = [];
+        $this->showWinModal = true;
         $this->attemptTracker = $this->freshAttemptTracker();
         $this->attemptContext = [];
         $this->commands     = $state->initialCode;
@@ -351,6 +373,8 @@ class GameBoard extends Component
         $this->playerAnimationTick = 0;
         $this->showInventoryModal = false;
         $this->codeFeedback = [];
+        $this->solutionReview = [];
+        $this->showWinModal = true;
         $this->attemptTracker = $this->freshAttemptTracker();
         $this->attemptContext = [];
         $this->commands     = $state->initialCode;
@@ -379,6 +403,31 @@ class GameBoard extends Component
     public function updatedCommands(): void
     {
         $this->codeFeedback = [];
+        $this->solutionReview = [];
+    }
+
+    public function reviewCompletedLevel(): void
+    {
+        $this->showWinModal = false;
+    }
+
+    public function restartLevelKeepingCode(): void
+    {
+        $state  = GameState::fromArray($this->gameState);
+        (new InventoryService())->syncPlayer($state->player);
+        $engine = new GameEngine();
+
+        $engine->resetLevel($state);
+
+        $this->commandQueue = [];
+        $this->currentStep  = 0;
+        $this->playerIsWalking = false;
+        $this->playerAnimationTick = 0;
+        $this->showInventoryModal = false;
+        $this->solutionReview = [];
+        $this->attemptContext = [];
+        $this->gameState = $state->toArray();
+        $this->showWinModal = true;
     }
 
     /**
@@ -663,6 +712,42 @@ class GameBoard extends Component
         $this->attemptTracker = array_merge($this->attemptTracker, $analysis['attempt']);
         $this->attemptContext['completed'] = true;
         $this->codeFeedback = $this->appendFeedback($this->codeFeedback, $analysis['feedback'], 'route');
+        $this->solutionReview = $this->buildSolutionReview($state);
+    }
+
+    /**
+     * @return array<string, mixed>
+     */
+    private function buildSolutionReview(GameState $state): array
+    {
+        if (! $state->win) {
+            return [];
+        }
+
+        $pendingFeedback = array_values(array_filter(
+            $this->codeFeedback,
+            fn (array $item) => in_array($item['type'] ?? '', ['optimization', 'warning', 'hint'], true)
+        ));
+
+        $pendingCount = count($pendingFeedback);
+        $stars = max(1, 3 - min(2, $pendingCount));
+
+        $summary = match ($stars) {
+            3 => 'Solucao direta e sem pendencias de melhoria.',
+            2 => 'Fase concluida, mas ha uma melhoria recomendada no tutor.',
+            default => 'Fase concluida com melhorias importantes para revisar.',
+        };
+
+        return [
+            'stars' => $stars,
+            'maxStars' => 3,
+            'pendingCount' => $pendingCount,
+            'summary' => $summary,
+            'pendingTitles' => array_slice(array_values(array_filter(array_map(
+                fn (array $item) => $item['title'] ?? null,
+                $pendingFeedback
+            ))), 0, 3),
+        ];
     }
 
     /**
