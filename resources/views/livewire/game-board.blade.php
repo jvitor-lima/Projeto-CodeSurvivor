@@ -610,6 +610,17 @@
             height: clamp(32px, calc(var(--tile-size) * 0.86), 56px);
             transform-origin: 50% 92%;
             will-change: transform;
+            isolation: isolate;
+        }
+
+        .player-sprite-stack::before {
+            content: "";
+            position: absolute;
+            inset: 18% 12% 2%;
+            z-index: -1;
+            border-radius: 999px;
+            background: radial-gradient(circle, rgba(236, 253, 245, 0.28), rgba(16, 185, 129, 0.12) 48%, transparent 72%);
+            filter: blur(2px);
         }
 
         .player-token {
@@ -618,6 +629,7 @@
             width: 100%;
             height: 100%;
             object-fit: contain;
+            filter: drop-shadow(0 8px 8px rgba(0, 0, 0, 0.85)) drop-shadow(0 0 8px rgba(236, 253, 245, 0.28));
         }
 
         .player-walking .player-sprite-stack {
