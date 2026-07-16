@@ -261,6 +261,10 @@ class GameBoard extends Component
 
         if ($this->hasNewInventoryItem($previousInventory, $state->player->inventory)) {
             $this->showInventoryModal = true;
+            $state->isRunning = false;
+            $state->setMessage('Item coletado. A execucao foi pausada para voce revisar o inventario.', 'info');
+            $state->addLog('Execucao pausada automaticamente para revisar o inventario.');
+            $result['done'] = true;
         }
 
         if (($result['done'] ?? false) && ! ($this->attemptContext['completed'] ?? false)) {
@@ -428,6 +432,25 @@ class GameBoard extends Component
         $this->attemptContext = [];
         $this->gameState = $state->toArray();
         $this->showWinModal = true;
+    }
+
+    public function resumeExecution(): void
+    {
+        if (($this->gameState['win'] ?? false) || ($this->gameState['lose'] ?? false)) {
+            return;
+        }
+
+        if (! isset($this->commandQueue[$this->currentStep])) {
+            return;
+        }
+
+        $state = GameState::fromArray($this->gameState);
+        $state->isRunning = true;
+        $state->clearMessage();
+        $state->addLog('Execucao retomada apos revisar o inventario.');
+
+        $this->showInventoryModal = false;
+        $this->gameState = $state->toArray();
     }
 
     /**

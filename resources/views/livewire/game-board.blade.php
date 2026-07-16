@@ -3191,6 +3191,21 @@
                 <span class="text-[11px] font-bold text-slate-500">Arraste um item para trocar de slot.</span>
             </div>
 
+            @if (! ($gameState['isRunning'] ?? false) && isset($commandQueue[$currentStep]) && ! ($gameState['win'] ?? false) && ! ($gameState['lose'] ?? false))
+                <div class="mb-4 rounded border border-blue-400/35 bg-blue-500/10 p-3 text-left">
+                    <div class="text-[10px] font-black uppercase tracking-widest text-blue-300">Execução pausada</div>
+                    <p class="mt-1 text-xs font-bold leading-relaxed text-slate-300">Revise o item coletado e retome a simulação quando estiver pronto.</p>
+                    <button
+                        type="button"
+                        wire:click="resumeExecution"
+                        class="mt-3 inline-flex items-center gap-2 rounded bg-blue-600 px-4 py-2 text-xs font-black uppercase tracking-widest text-white transition-colors hover:bg-blue-500"
+                    >
+                        {!! UIConfig::getIcon('play', 'w-4 h-4') !!}
+                        Retomar
+                    </button>
+                </div>
+            @endif
+
             <div class="grid grid-cols-2 sm:grid-cols-4 gap-3">
                 @foreach ($this->getInventorySlots() as $slotIndex => $slot)
                     <div
