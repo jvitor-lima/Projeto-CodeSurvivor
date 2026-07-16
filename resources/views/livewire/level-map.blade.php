@@ -175,10 +175,15 @@
 
         {{-- Footer de Navegação/Ações --}}
         <footer class="p-8 flex justify-between items-center bg-gradient-to-t from-black/80 to-transparent">
-            <div class="flex gap-4">
+            <div class="flex flex-wrap items-center gap-4">
                 <a href="/" class="px-8 py-3 bg-slate-900/50 hover:bg-red-900/20 hover:border-red-900/50 text-slate-400 hover:text-red-400 border border-slate-800 rounded-sm text-xs font-black uppercase tracking-widest transition-all">
                     Voltar ao menu
                 </a>
+                <div class="flex flex-wrap items-center gap-3 rounded border border-slate-800 bg-black/55 px-4 py-3 text-[10px] font-black uppercase tracking-widest text-slate-400">
+                    <span class="inline-flex items-center gap-1.5"><span class="h-2.5 w-2.5 rounded-full bg-emerald-500"></span> Concluída</span>
+                    <span class="inline-flex items-center gap-1.5"><span class="h-2.5 w-2.5 rounded-full bg-white"></span> Disponível</span>
+                    <span class="inline-flex items-center gap-1.5"><span class="h-2.5 w-2.5 rounded-full bg-slate-600"></span> Bloqueada</span>
+                </div>
             </div>
 
             <div class="text-right">
